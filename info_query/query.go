@@ -46,7 +46,7 @@ func Querys() {
 	}
 }
 
-func QueryAnalytic(label string, banco string, subproducto string, contraparte string) {
+func QueryAnalytic(label string, banco string, contraparte string) {
 	client, err := config.GetPrometheusClient()
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
@@ -58,7 +58,7 @@ func QueryAnalytic(label string, banco string, subproducto string, contraparte s
 	defer cancel()
 
 	// Construcción dinámica del query
-	query := fmt.Sprintf(`sum(`+label+`{banco="%s", fecha="2026-01-15", contraparte="%s"})`,
+	query := fmt.Sprintf(`sum(`+label+`{banco="%s", fecha="2026-01-16", contraparte="%s"})`,
 		banco, contraparte)
 
 	result, warnings, err := v1api.Query(ctx, query, time.Now())
@@ -74,7 +74,7 @@ func QueryAnalytic(label string, banco string, subproducto string, contraparte s
 
 	if v, ok := result.(model.Vector); ok {
 		for _, sample := range v {
-			fmt.Printf("Label: "+label+"|"+"subproducto: "+contraparte+" Total de registros: %s\n", sample.Value)
+			fmt.Printf("Label: "+label+"|"+"contraparte: "+contraparte+" Total de registros: %s\n", sample.Value)
 		}
 	}
 }
