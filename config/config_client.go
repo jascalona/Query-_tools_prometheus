@@ -19,7 +19,7 @@ func (t *authTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 }
 
 func GetPrometheusClient() (api.Client, error) {
-	address := "http://192.168.100.239:9090"
+	address := "http://212.56.40.50:9090"
 	username := "admin"
 	password := "$Yc0m-2023"
 

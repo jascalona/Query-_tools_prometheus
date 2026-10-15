@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Inventario - Métricas Prometheus</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f6f9; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        h1 { font-size: 24px; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        h2 { font-size: 18px; color: #475569; margin-top: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 30px; font-size: 14px; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background-color: #f8fafc; color: #1e293b; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+        tr:hover { background-color: #f1f5f9; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
+        .badge-success { background-color: #dcfce7; color: #166534; }
+        .badge-warning { background-color: #fef9c3; color: #854d0e; }
+        .badge-danger { background-color: #fee2e2; color: #991b1b; }
+        .total-row { font-weight: bold; background-color: #f8fafc; }
+        code { background-color: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 13px; color: #d63384; word-break: break-all; }
+        .alert-box { background-color: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; margin-bottom: 20px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📊 Inventario Completo - Métricas Prometheus</h1>
+    <p><strong>Servidor:</strong> http://212.56.40.50:9090</p>
+    
+    <h2>Resumen por Categoría</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Categoría</th>
+                <th>Total</th>
+                <th>Presentes</th>
+                <th>Ausentes</th>
+                <th>Errores</th>
+                <th>% Presente</th>
+            </tr>
+        </thead>
+        <tbody><tr>
+			<td><strong>Red</strong></td>
+			<td>22</td>
+			<td><span class="badge badge-success">21</span></td>
+			<td><span class="badge badge-warning">1</span></td>
+			<td><span class="badge badge-danger">0</span></td>
+			<td><strong>95.45%</strong></td>
+		</tr><tr>
+			<td><strong>Negocio</strong></td>
+			<td>55</td>
+			<td><span class="badge badge-success">17</span></td>
+			<td><span class="badge badge-warning">38</span></td>
+			<td><span class="badge badge-danger">0</span></td>
+			<td><strong>30.91%</strong></td>
+		</tr><tr>
+			<td><strong>Infraestructura</strong></td>
+			<td>166</td>
+			<td><span class="badge badge-success">164</span></td>
+			<td><span class="badge badge-warning">2</span></td>
+			<td><span class="badge badge-danger">0</span></td>
+			<td><strong>98.80%</strong></td>
+		</tr><tr class="total-row">
+		<td>TOTAL</td>
+		<td>243</td>
+		<td>202</td>
+		<td>41</td>
+		<td>0</td>
+		<td>83.13%</td>
+	</tr></tbody></table>
+    <h2>🔍 Detalle de Consultas con Incidencias (Ausentes o con Errores)</h2><div class="alert-box">Se encontraron <strong>41</strong> consultas con incidencias.</div>
+		<table>
+			<thead>
+				<tr>
+					<th>Categoría</th>
+					<th>Componente</th>
+					<th>Estado</th>
+					<th>Expresión PromQL Limpia</th>
+					<th>Respuesta de Prometheus</th>
+				</tr>
+			</thead>
+			<tbody><tr>
+				<td>Negocio</td>
+				<td><strong>Argus API</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>((sum(analytic_metrics_amount{fecha=~".*", tipo="Recibidas", subproducto=~".*", corte=~".*", banco=~".*", status="A"}) by(status)) / 100) - ((sum(analytic_metrics_amount{fecha=~".*", tipo="Enviadas", subproducto=~".*", corte=~".*", banco=~".*", status="A"}) by(status))/100)</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus API</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum by (status)(rate(analytic_metrics{tipo="Recibidas", status=~"A|R", subproducto=~".*", banco=~".*"}[1m]))</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus API</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics{fecha=~".*", tipo="Enviadas", subproducto=~".*", corte=~".*", status="A", banco=~".*"}) by(status)</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus API</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>(sum(analytic_metrics_amount{fecha=~".*", tipo="Enviadas", subproducto=~".*", corte=~".*", status="A"}) by(status))/100</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus API</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics{tipo="Enviadas", status="R", corte=~".*", fecha=~".*", subproducto=~".*", banco=~".*"}) by(negocio)
+* on (negocio) group_left(descripcion) analytic_rejected_states{}</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus API</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics{fecha=~".*", tipo="Recibidas", subproducto=~".*", corte=~".*", status="A", banco=~".*"}) by(status)</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus API</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>(sum(analytic_metrics_amount{fecha=~".*", tipo="Recibidas", subproducto=~".*", corte=~".*", status="A"}) by(status)) / 100</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus API</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics{tipo="Recibidas", status=~"A|R|I|0", corte=~".*", fecha=~".*", subproducto=~".*", banco=~".*"}) by(status)</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus API</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics{tipo="Recibidas", status="R", corte=~".*", fecha=~".*", subproducto=~".*", banco=~".*"}) by(negocio) * on (negocio) group_left(descripcion) analytic_rejected_states{}</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus API</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics{fecha=~".*", tipo="Recibidas", subproducto=~".*", corte=~".*", status="R", banco=~".*"}) by(status)</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus API</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>(sum(analytic_metrics_amount{fecha=~".*", tipo="Recibidas", subproducto=~".*", corte=~".*", status="R"}) by(status)) / 100</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus API</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics{tipo="Recibidas", subproducto=~".*", corte=~"0", status=~"I|0", banco=~".*"}) by(status)</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus API</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics_amount{tipo="Recibidas", subproducto=~".*", corte=~"0", status=~"I|0"}) by(status) / 100</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus API</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>(sum(analytic_metrics_core{fecha=~".*", tipo="Recibidas", subproducto=~".*", corte=~".*", banco=~".*"}))</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus API</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>(sum(analytic_metrics_core_amount{fecha=~".*", tipo="Recibidas", subproducto=~".*", corte=~".*"})) / 100</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>((sum(analytic_metrics_lbtr_amount{fecha=~".*", tipo="Recibidas", subproducto=~".*", corte=~".*", status="A", banco=~".*"}) by(status)) / 100) - ((sum(analytic_metrics_lbtr_amount{fecha=~".*", tipo="Enviadas", subproducto=~".*", corte=~".*", status="A", banco=~".*"}) by(status))/100)</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum by (status)(rate(analytic_metrics_lbtr{tipo="Enviadas", status=~"A|R", subproducto=~".*", banco=~".*"}[1m]))</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum by (status)(rate(analytic_metrics_lbtr{tipo="Recibidas", status=~"A|R", subproducto=~".*", banco=~".*"}[1m]))</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics_lbtr{fecha=~".*", tipo="Enviadas", subproducto=~".*", corte=~".*", status="A", banco=~".*"}) by(status)</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>(sum(analytic_metrics_lbtr_amount{fecha=~".*", tipo="Enviadas", subproducto=~".*", corte=~".*", status="A"}) by(status))/100</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics_lbtr{tipo="Enviadas", status=~"A|R|I|0", corte=~".*", fecha=~".*", subproducto=~".*", banco=~".*"}) by(status)</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics_lbtr{tipo="Enviadas", status="R", corte=~".*", fecha=~".*", subproducto=~".*", banco=~".*"}) by(negocio) * on (negocio) group_left(descripcion) analytic_rejected_states{}</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics_lbtr{fecha=~".*", tipo="Enviadas", subproducto=~".*", corte=~".*", status="R", banco=~".*"}) by(status)</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>(sum(analytic_metrics_lbtr_amount{fecha=~".*", tipo="Enviadas", subproducto=~".*", corte=~".*", status="R"}) by(status)) / 100</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics_lbtr{tipo="Enviadas", subproducto=~".*", corte=~"0", status=~"I|0", banco=~".*"}) by(status)</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics_lbtr_amount{tipo="Enviadas", subproducto=~".*", corte=~"0", status=~"I|0"}) by(status) / 100</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>(sum(analytic_metrics_lbtr_core{fecha=~".*", tipo="Enviadas", subproducto=~".*", corte=~".*", banco=~".*"}))</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics_lbtr{fecha=~".*", tipo="Recibidas", subproducto=~".*", corte=~".*", status="A", banco=~".*"}) by(status)</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>(sum(analytic_metrics_amount{fecha=~".*", tipo="Recibidas", subproducto=~".*", corte=~".*", status="A"}) by(status)) / 100</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics_lbtr{tipo="Recibidas", status=~"A|R|I|0", corte=~".*", fecha=~".*", subproducto=~".*", banco=~".*"}) by(status)</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics_lbtr{tipo="Recibidas", status="R", corte=~".*", fecha=~".*", subproducto=~".*", banco=~".*"}) by(negocio) * on (negocio) group_left(descripcion) analytic_rejected_states{}</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics_lbtr{fecha=~".*", tipo="Recibidas", subproducto=~".*", corte=~".*", status="R", banco=~".*"}) by(status)</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>(sum(analytic_metrics_amount{fecha=~".*", tipo="Recibidas", subproducto=~".*", corte=~".*", status="R"}) by(status)) / 100</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics_lbtr{tipo="Recibidas", subproducto=~".*", corte=~"0", status=~"I|0", banco=~".*"}) by(status)</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(analytic_metrics_amount{tipo="Recibidas", subproducto=~".*", corte=~"0", status=~"I|0"}) by(status) / 100</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>(sum(analytic_metrics_lbtr_core{fecha=~".*", tipo="Recibidas", subproducto=~".*", corte=~".*", banco=~".*"}))</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus LBTR</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>(sum(analytic_metrics_core_amount{fecha=~".*", tipo="Recibidas", subproducto=~".*", corte=~".*"})) / 100</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Red</td>
+				<td><strong>Microservicios</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>http_request_duration_seconds_bucket{job=~".*"}</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Infraestructura</td>
+				<td><strong>Microservicios</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>sum(histogram_quantile(0.5, rate(ms_tiempo_duracion_proceso_bucket{job=~".*",  producto=~".*"}[5m]))) by (proceso)</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Infraestructura</td>
+				<td><strong>Argus Dashboard - Microservicios SIMF</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>ms_producer{node_name!=""}</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr><tr>
+				<td>Negocio</td>
+				<td><strong>Argus Dashboard - Operacional</strong></td>
+				<td><span class="badge badge-warning">AUSENTE</span></td>
+				<td><code>analytic_rejected_states</code></td>
+				<td><small>Sin series activas (0 resultados)</small></td>
+			</tr></tbody></table>
+    <h2>Resumen Detallado por Componente</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Categoría</th>
+                <th>Componente</th>
+                <th>Total</th>
+                <th>Presentes</th>
+                <th>Ausentes</th>
+                <th>Errores</th>
+                <th>% Presente</th>
+            </tr>
+        </thead>
+        <tbody><tr>
+			<td>Infraestructura</td>
+			<td><strong>Microservicios</strong></td>
+			<td>2</td>
+			<td>1</td>
+			<td>1</td>
+			<td>0</td>
+			<td>50.00%</td>
+		</tr><tr>
+			<td>Infraestructura</td>
+			<td><strong>Node Exporter</strong></td>
+			<td>52</td>
+			<td>52</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr><tr>
+			<td>Red</td>
+			<td><strong>Argus Dashboard - Node Exporter</strong></td>
+			<td>2</td>
+			<td>2</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr><tr>
+			<td>Infraestructura</td>
+			<td><strong>Argus Dashboard - Microservicios SIMF</strong></td>
+			<td>8</td>
+			<td>7</td>
+			<td>1</td>
+			<td>0</td>
+			<td>87.50%</td>
+		</tr><tr>
+			<td>Infraestructura</td>
+			<td><strong>Argus Dashboard - Legacy PostgreSQL</strong></td>
+			<td>6</td>
+			<td>6</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr><tr>
+			<td>Red</td>
+			<td><strong>Container Overview (Alloy)</strong></td>
+			<td>2</td>
+			<td>2</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr><tr>
+			<td>Infraestructura</td>
+			<td><strong>Kafka SIMF</strong></td>
+			<td>15</td>
+			<td>15</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr><tr>
+			<td>Red</td>
+			<td><strong>Microservicios</strong></td>
+			<td>1</td>
+			<td>0</td>
+			<td>1</td>
+			<td>0</td>
+			<td>0.00%</td>
+		</tr><tr>
+			<td>Infraestructura</td>
+			<td><strong>Argus Dashboard - cAdvisor</strong></td>
+			<td>5</td>
+			<td>5</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr><tr>
+			<td>Infraestructura</td>
+			<td><strong>Argus Dashboard - Observability Stack</strong></td>
+			<td>3</td>
+			<td>3</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr><tr>
+			<td>Infraestructura</td>
+			<td><strong>Argus Dashboard - Kafka</strong></td>
+			<td>7</td>
+			<td>7</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr><tr>
+			<td>Negocio</td>
+			<td><strong>Argus LBTR</strong></td>
+			<td>23</td>
+			<td>1</td>
+			<td>22</td>
+			<td>0</td>
+			<td>4.35%</td>
+		</tr><tr>
+			<td>Red</td>
+			<td><strong>Node Exporter</strong></td>
+			<td>14</td>
+			<td>14</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr><tr>
+			<td>Infraestructura</td>
+			<td><strong>Argus Dashboard - Node Exporter</strong></td>
+			<td>12</td>
+			<td>12</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr><tr>
+			<td>Negocio</td>
+			<td><strong>Argus Dashboard - Operacional</strong></td>
+			<td>9</td>
+			<td>8</td>
+			<td>1</td>
+			<td>0</td>
+			<td>88.89%</td>
+		</tr><tr>
+			<td>Negocio</td>
+			<td><strong>Argus API</strong></td>
+			<td>23</td>
+			<td>8</td>
+			<td>15</td>
+			<td>0</td>
+			<td>34.78%</td>
+		</tr><tr>
+			<td>Infraestructura</td>
+			<td><strong>Argus API</strong></td>
+			<td>1</td>
+			<td>1</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr><tr>
+			<td>Infraestructura</td>
+			<td><strong>Container Summary</strong></td>
+			<td>6</td>
+			<td>6</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr><tr>
+			<td>Infraestructura</td>
+			<td><strong>PostgreSQL</strong></td>
+			<td>31</td>
+			<td>31</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr><tr>
+			<td>Infraestructura</td>
+			<td><strong>Argus Dashboard - PostgreSQL</strong></td>
+			<td>9</td>
+			<td>9</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr><tr>
+			<td>Infraestructura</td>
+			<td><strong>Argus Dashboard - Nginx</strong></td>
+			<td>1</td>
+			<td>1</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr><tr>
+			<td>Infraestructura</td>
+			<td><strong>Argus Dashboard - PgPool</strong></td>
+			<td>1</td>
+			<td>1</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr><tr>
+			<td>Red</td>
+			<td><strong>Argus Dashboard - Microservicios SIMF</strong></td>
+			<td>3</td>
+			<td>3</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr><tr>
+			<td>Infraestructura</td>
+			<td><strong>Argus LBTR</strong></td>
+			<td>1</td>
+			<td>1</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr><tr>
+			<td>Infraestructura</td>
+			<td><strong>Container Overview (Alloy)</strong></td>
+			<td>6</td>
+			<td>6</td>
+			<td>0</td>
+			<td>0</td>
+			<td>100.00%</td>
+		</tr></tbody></table></div></body></html>
